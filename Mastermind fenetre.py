@@ -1,7 +1,5 @@
 import tkinter as tk #biliotheque
 couleurs=['red','blue','green','yellow']
-def couleur_choisie(couleur): #fonction pour choisir une couleur
-    print(f"choisie la couleur:{couleur}")
 window=tk.Tk()#cree la fenetre
 window.title("mastermind")#titre de la fenetre (pas tres important)
 window.geometry("1280x720")#taille de la fenetre (meme chose que au dessus)
