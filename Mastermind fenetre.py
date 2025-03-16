@@ -1,5 +1,5 @@
 import tkinter as tk #biliotheque
-couleurs=['red','blue','green','yellow']
+couleurs=["red","blue","green","yellow"]
 window=tk.Tk()#cree la fenetre
 window.title("mastermind")#titre de la fenetre (pas tres important)
 window.geometry("1280x720")#taille de la fenetre (meme chose que au dessus)
@@ -10,18 +10,41 @@ for couleur in couleurs:#cree les boutton
     bouton.pack(side=tk.LEFT, padx=5)
 window.mainloop()#START GAME!
 
+#Le jouer 1 choisi son code secret
 def choix_code():
     codes=[]
+    print("Choisir un code secret a 4 couleurs:")
     for i in range (4):
-        code=input("Choisir une couleur pour creer un code a quatre couleurs(faire cela 4 fois):")#permet a l'utilisateur qui choisi le code secret de le mmettre dedans 
-        codes.append(code) #met les couleurs choisis dans une liste 
-    return codes #a enlever plus tard mais la c'est pour tester qu'il renvoie bien le code secret de l'utilisateur
-print(choix_code())
+        code=(f"Couleur {i+1}:")
+        codes.append(code)
+    return codes
 
-def deviner_code():
-    guess=[] 
-    for i in range (4):
-        devine=input("deviner le code du jouer numero 1")
-        guess.append(devine)
-    return guess
-print(deviner_code)
+#le joueur 2 devine le code du joueur 1
+def deviner_code(codes):
+    bonne_place=0 
+    while bonne_place<4: #devine jusqu'a ce que les 4 soient a la bonne place
+        guess=[] # reinitialisé a chaque fois que le joueur 2 devine
+        bonne_place=0
+        bonne_couleur=0
+        print("Devinez le code")
+        #deviner
+        for i in range(4):
+            devine=input(f"Couleur {i+1}:")
+            guess.append(devine)
+        #verifier combien sont a la bonne place
+        for i in range(4):
+            if guess[i]==codes[i]:
+                bonne_place+=1
+        #verifier combien de couleurs sont bonnes mais mal placés
+        for color in guess:
+            if color in codes:
+                bonne_couleur+=1
+        #resultats du guess
+        print(f"Vous avez {bonne_couleur} couleurs trouvés, dont {bonne_place} qu sont a la bonne place")
+    print("Bravo!Vous avez trouve le code secret")
+       
+#execution du code       
+code_secret = choix_code()
+deviner_code(code_secret)     
+
+

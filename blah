@@ -1,0 +1,7 @@
+def choix_code():
+    codes=[]
+    print("Choisir un code secret a 4 couleurs:")
+    for i in range (4):
+        code=(f"Couleur {i+1}:")
+        codes.append(code)
+        
