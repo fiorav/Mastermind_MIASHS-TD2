@@ -20,6 +20,10 @@ def deviner_code():
         devine=input("deviner le code du jouer numero 1")
         guess.append(devine)
     return guess
+print(deviner_code)
+
+
+
 
 
 
