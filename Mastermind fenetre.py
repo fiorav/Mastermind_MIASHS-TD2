@@ -13,20 +13,21 @@ window.mainloop()#START GAME!
 #Le jouer 1 choisi son code secret
 def choix_code():
     codes=[]
-    print("Choisir un code secret a 4 couleurs:")
+    print("Joueur 1, Choisir un code secret a 4 couleurs:")
     for i in range (4):
-        code=(f"Couleur {i+1}:")
+        code=input(f"Couleur {i+1}:")
         codes.append(code)
     return codes
+    print("Code secret choisi")
 
 #le joueur 2 devine le code du joueur 1
 def deviner_code(codes):
     bonne_place=0 
-    while bonne_place<4: #devine jusqu'a ce que les 4 soient a la bonne place
+    while True: #devine jusqu'a ce que les 4 soient a la bonne place
         guess=[] # reinitialisé a chaque fois que le joueur 2 devine
         bonne_place=0
         bonne_couleur=0
-        print("Devinez le code")
+        print("Jouer 2, Devinez le code")
         #deviner
         for i in range(4):
             devine=input(f"Couleur {i+1}:")
@@ -41,10 +42,14 @@ def deviner_code(codes):
                 bonne_couleur+=1
         #resultats du guess
         print(f"Vous avez {bonne_couleur} couleurs trouvés, dont {bonne_place} qu sont a la bonne place")
-    print("Bravo!Vous avez trouve le code secret")
+        if bonne_place==4:
+            print("Bravo!Vous avez trouve le code secret")
+            break
        
 #execution du code       
 code_secret = choix_code()
-deviner_code(code_secret)     
+deviner_code(code_secret)   
+
+#JUSTE PROBLÈME SI IL Y A DES DOUBLES DANS LE GUESS ET PAS DANS LE CODE BONNE_COULEUR PREND 1 EN PLUS QUAND MEME  
 
 
