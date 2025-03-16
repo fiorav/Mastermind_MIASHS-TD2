@@ -14,5 +14,12 @@ def choix_code():
     return codes #a enlever plus tard mais la c'est pour tester qu'il renvoie bien le code secret de l'utilisateur
 print(choix_code())
 
+def deviner_code():
+    guess=[]
+    for i in range (4):
+        devine=input("deviner le code du jouer numero 1")
+        guess.append(devine)
+    return guess
+
 
 
