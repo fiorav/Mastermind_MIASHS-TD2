@@ -3,5 +3,6 @@
 - Historique
 - Nbr d'essais
 - Interface plus jolie
+- Fode secret aleatoire
 - Mettre fonctions dans tkinter
 - ALLER PLUS LOIN
