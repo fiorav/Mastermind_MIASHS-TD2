@@ -1,12 +1,35 @@
 import tkinter as tk
 couleurs=['red','blue','green','yellow']
+code_secret=[]
 current_guess=[]
 guess_labels = []
 taille_code=4
+def chosir_code(couleur):
+    if len(code_secret)<taille_code:
+        code_secret.append(couleur)
+        actualise_code()
 def choisir_couleur(couleur):
     if len(current_guess)<taille_code:
         current_guess.append(couleur)
         actualise_code()
+        
+def test_mastermind():
+    while True: #devine jusqu'a ce que les 4 soient a la bonne place
+        current_guess=[] # reinitialisé a chaque fois que le joueur 2 devine
+        bonne_place=0
+        bonne_couleur=0
+        chosir_couleur()
+        for elem in code_secret:
+            if elem in current_guess:
+                bonne_couleur+=1
+        for i in range (len(code_secret)):
+            if current_guess[i]==code_secret[i]:
+                bonne_place+=1
+        print(f"Vous avez {bonne_couleur} couleurs trouvés, dont {bonne_place} qu sont a la bonne place")
+        if bonne_place==4:
+            print("Bravo8 Vous avez trouvé le code secret!")
+            break
+    #il faut integrer ca dans les boutons 
 def actualise_code():
     i=0
     for label in guess_labels:
