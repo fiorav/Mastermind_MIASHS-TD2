@@ -1,8 +1,8 @@
 # Mastermind_MIASHS-TD2
 #taches a faire:
 - Historique
-- Nbr d'essais
+- Nbr d'essais (deja fait)
 - Interface plus jolie
-- Fode secret aleatoire
-- Mettre fonctions dans tkinter
-- ALLER PLUS LOIN
+- code secret aleatoire (deja fait)
+- Mettre fonctions dans tkinter(deja fait)
+- ALLER PLUS LOIN 
