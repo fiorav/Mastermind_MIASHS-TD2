@@ -13,10 +13,27 @@ def mode_1_joueur():
         return [random.choice(COLORS) for _ in range(CODE_LENGTH)]
 
     def get_feedback(secret_code, guess):
-        black_pegs = sum(s == g for s, g in zip(secret_code, guess))
-        white_pegs = sum(min(secret_code.count(c), guess.count(c)) for c in set(guess)) - black_pegs
+        black_pegs = 0
+        for i in range(len(secret_code)):
+            if secret_code[i] == guess[i]:
+                black_pegs += 1
+    
+        white_pegs = 0
+    
+        for color in set(guess): #set permet d'enlever les couleurs qui repete
+            secret_count = 0
+            guess_count = 0
+            for c in secret_code:
+                if c == color:
+                    secret_count += 1
+            for c in guess:
+                if c == color:
+                    guess_count += 1
+            white_pegs += min(secret_count, guess_count)
+    
+        white_pegs -= black_pegs
         return black_pegs, white_pegs
-
+    
     def submit_guess():
         global attempts_left, current_guess
 
@@ -151,10 +168,27 @@ def mode_2_joueurs():
 
         window.mainloop()
 
-    # fonction pour tester si la position et la couleur sont correcte
+        # fonction pour tester si la position et la couleur sont correcte
     def get_feedback(secret_code, guess):
-        black_pegs = sum(s == g for s, g in zip(secret_code, guess))
-        white_pegs = sum(min(secret_code.count(c), guess.count(c)) for c in set(guess)) - black_pegs
+        black_pegs = 0
+        for i in range(len(secret_code)):
+            if secret_code[i] == guess[i]:
+                black_pegs += 1
+    
+        white_pegs = 0
+    
+        for color in set(guess): #set permet d'enlever les couleurs qui repete
+            secret_count = 0
+            guess_count = 0
+            for c in secret_code:
+                if c == color:
+                    secret_count += 1
+            for c in guess:
+                if c == color:
+                    guess_count += 1
+            white_pegs += min(secret_count, guess_count)
+    
+        white_pegs -= black_pegs
         return black_pegs, white_pegs
 
     def submit_guess():
