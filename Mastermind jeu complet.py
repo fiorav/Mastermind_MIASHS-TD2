@@ -12,7 +12,7 @@ def mode_1_joueur():
     def generate_secret_code():
         return [random.choice(COLORS) for _ in range(CODE_LENGTH)]
 
-    def get_feedback(secret_code, guess):
+    def get_feedback(secret_code, guess): #detecter si les couleurs sont a la bonne place ou bonne couleur ou les deux
         black_pegs = 0
         for i in range(len(secret_code)):
             if secret_code[i] == guess[i]:
@@ -34,7 +34,7 @@ def mode_1_joueur():
         white_pegs -= black_pegs
         return black_pegs, white_pegs
     
-    def submit_guess():
+    def submit_guess():#confimer
         global attempts_left, current_guess
 
         if len(current_guess) < CODE_LENGTH:
