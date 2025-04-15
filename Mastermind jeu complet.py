@@ -69,6 +69,13 @@ def mode_1_joueur():
             else:
                 label.config(bg="gray")
 
+    def back():
+        if len(current_guess)==0:
+            messagebox.showwarning("information",f"il y a plus rien a effacer!")
+            return
+        current_guess.pop()
+        update_guess_display()
+
     # afficher le jeu
     window = tk.Tk()
     window.title("Mastermind")
@@ -98,6 +105,8 @@ def mode_1_joueur():
         guess_labels.append(label)
 
     # bouton confirmer
+    back_button = tk.Button(window, text="back", font=("Arial", 14), command=back)
+    back_button.pack(pady=10)
     submit_button = tk.Button(window, text="confirmer", font=("Arial", 14), command=submit_guess)
     submit_button.pack(pady=10)
 
@@ -127,6 +136,13 @@ def mode_2_joueurs():
                 label.config(bg=secret_code[i])
             else:
                 label.config(bg="gray")
+
+    def back_secret_color():
+        if len(secret_code)==0:
+            return
+        secret_code.pop()
+        update_secret_display()
+        
     # fonction pour que le joueur 1 choisie les couleurs
     def setup_main_game():
         global attempts_left, current_guess, attempts_label, guess_labels, secret_window
@@ -163,6 +179,8 @@ def mode_2_joueurs():
             guess_labels.append(label)
 
         # bouton confirmer
+        back_button = tk.Button(window, text="back", font=("Arial", 14), command=back)
+        back_button.pack(pady=10)
         submit_button = tk.Button(window, text="confirmer", font=("Arial", 14), command=submit_guess)
         submit_button.pack(pady=10)
 
@@ -218,14 +236,19 @@ def mode_2_joueurs():
         if len(current_guess) < CODE_LENGTH:
             current_guess.append(color)
             update_guess_display()
-
+    
     def update_guess_display():
         for i, label in enumerate(guess_labels):
             if i < len(current_guess):
                 label.config(bg=current_guess[i])
             else:
                 label.config(bg="gray")
-
+    def back():
+        if len(current_guess)==0:
+            messagebox.showwarning("information",f"il y a plus rien a effacer!")
+            return
+        current_guess.pop()
+        update_guess_display()
     # fenetre code secret
     secret_window = tk.Tk()
     secret_window.title("choisir code secret")
@@ -248,6 +271,8 @@ def mode_2_joueurs():
         secret_labels.append(label)
 
     # confirm bouton
+    back_button_secret_color = tk.Button(secret_window, text="back", font=("Arial", 14), command=back_secret_color)
+    back_button_secret_color.pack(pady=10)
     confirm_button = tk.Button(secret_window, text="confirmer", font=("Arial", 14), command=start_game)
     confirm_button.pack(pady=10)
 
@@ -259,8 +284,10 @@ window_mode_jeu = tk.Tk()
 window_mode_jeu.title("Mastermind")
 mode_jeu_frame=tk.Frame(window_mode_jeu)
 mode_jeu_frame.pack()
-button = tk.Button(mode_jeu_frame,text="Mode 1 joueur", font=("courrier",40), bg="white", fg="black", command=mode_1_joueur)
-button.pack()
-button = tk.Button(mode_jeu_frame,text="Mode 2 joueur", font=("courrier",40), bg="white", fg="black", command=mode_2_joueurs)
-button.pack()
+button_mode_1_joueur = tk.Button(mode_jeu_frame,text="Mode 1 joueur", font=("courrier",40), bg="white", fg="black", command=mode_1_joueur)
+button_mode_1_joueur.pack()
+button_mode_2_joueur = tk.Button(mode_jeu_frame,text="Mode 2 joueur", font=("courrier",40), bg="white", fg="black", command=mode_2_joueurs)
+button_mode_2_joueur.pack()
+button_continuer = tk.Button(mode_jeu_frame,text="continuer", font=("courrier",40), bg="white", fg="black")
+button_continuer.pack()
 window_mode_jeu.mainloop()
