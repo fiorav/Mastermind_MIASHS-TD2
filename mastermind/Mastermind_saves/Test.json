@@ -1,0 +1,1 @@
+{"game_mode": "single", "secret_code": ["blue", "blue", "yellow", "blue"], "attempts_left": 8, "current_guess": [], "guess_history": [[["red", "blue", "green", "yellow"], 1, 1], [["red", "blue", "green", "yellow"], 1, 1]], "max_attempts": 10, "code_length": 4, "colors": ["red", "blue", "green", "yellow"]}
