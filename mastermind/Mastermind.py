@@ -2,15 +2,12 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 import random
 import json
-import os
 
-COLORS = ['red', 'blue', 'green', 'yellow']
+ALL_COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'brown']
+COLORS = ALL_COLORS[:4]
 CODE_LENGTH = 4
 MAX_ATTEMPTS = 10
 SAVE_DIR = 'C:/Users/pc/Desktop/mastermind/Mastermind_saves'
-
-if not os.path.exists(SAVE_DIR):
-    os.makedirs(SAVE_DIR)
 
 game_mode = None
 secret_code = []
@@ -83,15 +80,18 @@ def show_main_menu():
     frame = tk.Frame(window_mode_jeu)
     frame.pack(pady=50)
 
-    tk.Button(frame, text="Mode 1 joueur", font=("Arial", 20), command=mode_1_joueur).pack(pady=10)
-    tk.Button(frame, text="Mode 2 joueurs", font=("Arial", 20), command=mode_2_joueurs).pack(pady=10)
-    tk.Button(frame, text="Continuer", font=("Arial", 20), command=load_game).pack(pady=10)
+    btn_Mode_solo = tk.Button(frame, text="Mode 1 joueur", font=("Arial", 20), command=mode_1_joueur)
+    btn_Mode_solo.pack(pady=10)
+    btn_Mode_multi = tk.Button(frame, text="Mode 2 joueurs", font=("Arial", 20), command=mode_2_joueurs)
+    btn_Mode_multi.pack(pady=10)
+    btn_continuer = tk.Button(frame, text="Continuer", font=("Arial", 20), command=load_game)
+    btn_continuer.pack(pady=10)
 
     window_mode_jeu.mainloop()
 
 # ------------------- Interface de jeu -------------------
 def create_game_ui(load=False):
-    global window, attempts_label, guess_labels, history_listbox
+    global window, attempts_label, guess_labels, history_container
 
     window = tk.Tk()
     window.title("Mastermind")
@@ -103,9 +103,26 @@ def create_game_ui(load=False):
 
     history_frame = tk.Frame(main_frame)
     history_frame.pack(side=tk.LEFT, padx=10, pady=10, fill=tk.Y)
-    tk.Label(history_frame, text="Historique des essais", font=("Arial", 12)).pack()
-    history_listbox = tk.Listbox(history_frame, height=25, width=30)
-    history_listbox.pack()
+    Historique = tk.Label(history_frame, text="Historique des essais", font=("Arial", 12))
+    Historique.pack()
+    history_canvas = tk.Canvas(history_frame, width=180, height=400)
+    scrollbar = tk.Scrollbar(history_frame, orient="vertical", command=history_canvas.yview)
+    scrollable_frame = tk.Frame(history_canvas)
+
+    #scrollable_frame.bind(
+    #    "<Configure>",
+    #    lambda e: history_canvas.configure(
+    #        scrollregion=history_canvas.bbox("all")
+    #    )
+    #)
+
+    history_canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    history_canvas.configure(yscrollcommand=scrollbar.set)
+
+    history_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+    history_container = scrollable_frame
     update_history_display()
 
     game_frame = tk.Frame(main_frame)
@@ -117,7 +134,8 @@ def create_game_ui(load=False):
     color_frame = tk.Frame(game_frame)
     color_frame.pack()
     for color in COLORS:
-        tk.Button(color_frame, bg=color, width=5, height=2, command=lambda c=color: select_color(c)).pack(side=tk.LEFT, padx=5)
+        btn = tk.Button(color_frame, bg=color, width=5, height=2, command=lambda c=color: select_color(c))
+        btn.pack(side=tk.LEFT, padx=5)
 
     guess_frame = tk.Frame(game_frame)
     guess_frame.pack(pady=10)
@@ -127,8 +145,10 @@ def create_game_ui(load=False):
         label.pack(side=tk.LEFT, padx=5)
         guess_labels.append(label)
 
-    tk.Button(game_frame, text="Retour", command=back).pack(pady=5)
-    tk.Button(game_frame, text="Confirmer", command=submit_guess).pack(pady=5)
+    btn_Retour = tk.Button(game_frame, text="Retour", command=Undo)
+    btn_Retour.pack(pady=5)
+    btn_Confirmer = tk.Button(game_frame, text="Confirmer", command=submit_guess)
+    btn_Confirmer.pack(pady=5)
     window.mainloop()
 
 # ------------------- Jeu solo -------------------
@@ -137,7 +157,9 @@ def mode_1_joueur(load=False):
     game_mode = 'single'
     window_mode_jeu.destroy()
     if not load:
-        secret_code = [random.choice(COLORS) for _ in range(CODE_LENGTH)]
+        secret_code = []
+        for _ in range(CODE_LENGTH):
+            secret_code.append(random.choice(COLORS))
         attempts_left = MAX_ATTEMPTS
         current_guess = []
         guess_history = []
@@ -189,7 +211,8 @@ def setup_secret_code_selection():
     btn_frame = tk.Frame(secret_window)
     btn_frame.pack()
     for color in COLORS:
-        tk.Button(btn_frame, bg=color, width=5, height=2, command=lambda c=color: add_color(c)).pack(side=tk.LEFT, padx=5)
+        btn = tk.Button(btn_frame, bg=color, width=5, height=2, command=lambda c=color: add_color(c))
+        btn.pack(side=tk.LEFT, padx=5)
 
     label_frame = tk.Frame(secret_window)
     label_frame.pack(pady=10)
@@ -197,8 +220,10 @@ def setup_secret_code_selection():
     for l in labels:
         l.pack(side=tk.LEFT, padx=5)
 
-    tk.Button(secret_window, text="Retour", command=undo).pack(pady=5)
-    tk.Button(secret_window, text="Confirmer", command=confirm).pack(pady=5)
+    btn_Retour = tk.Button(secret_window, text="Retour", command=undo)
+    btn_Retour.pack(pady=5)
+    btn_Confirmer = tk.Button(secret_window, text="Confirmer", command=confirm)
+    btn_Confirmer.pack(pady=5)
     secret_window.mainloop()
 
 # ------------------- Logique de jeu -------------------
@@ -235,10 +260,17 @@ def submit_guess():#confimer
             update_guess_display()
 
 def update_history_display():
-    if 'history_listbox' in globals():
-        history_listbox.delete(0, tk.END)
+    if 'history_container' in globals():#Vérifie d'abord si la variable history_container est définie (existe dans l'espace de noms global)
+        for widget in history_container.winfo_children():#Efface tous les widgets existants dans history_container
+            widget.destroy()
         for guess, black, white in guess_history:
-            history_listbox.insert(tk.END, f"{' '.join(guess)} => {black} noir, {white} blanc")
+            row = tk.Frame(history_container)
+            for color in guess:
+                btn = tk.Label(row, bg=color, width=2, height=1, bd=1)
+                btn.pack(side=tk.LEFT, padx=2, pady=1)
+            result_label = tk.Label(row, text=f"  ●{black} ○{white}", font=("Arial", 10))
+            result_label.pack(side=tk.LEFT, padx=5)
+            row.pack(anchor='w', pady=2)
 
 def select_color(color):
     global current_guess
@@ -250,7 +282,7 @@ def update_guess_display():
     for i in range(CODE_LENGTH):
         guess_labels[i].config(bg=current_guess[i] if i < len(current_guess) else "gray")
 
-def back():
+def Undo():
     if current_guess:
         current_guess.pop()
         update_guess_display()
@@ -316,7 +348,7 @@ def create_menu(win):
     menu.add_cascade(label="Fichier", menu=file_menu)
     win.config(menu=menu)
     #           ↑     ↑
-    #           /     L'objet de menu que vous avez créé
+    #           |     L'objet de menu que vous avez créé
     #           Nom du paramètre requis par Tkinter
 
 # ------------------- Lancer -------------------
