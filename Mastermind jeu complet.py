@@ -128,6 +128,7 @@ def mode_1_joueur():
 
 def mode_2_joueurs():
     global secret_code,secret_window
+    secret_code=[]
     window_mode_jeu.destroy()
     def start_game():
         global secret_code, attempts_left, current_guess
@@ -157,10 +158,9 @@ def mode_2_joueurs():
         secret_code.pop()
         update_secret_display()
         
-    global historique_text
     # fonction pour que le joueur 1 choisie les couleurs
     def setup_main_game():
-        global attempts_left, current_guess, attempts_label, guess_labels, secret_window
+        global attempts_left, current_guess, attempts_label, guess_labels, secret_window, historique_text, secret_code
 
         secret_window.destroy()  # fermer la fenetre secret code
 
@@ -198,6 +198,12 @@ def mode_2_joueurs():
         back_button.pack(pady=10)
         submit_button = tk.Button(window, text="confirmer", font=("Arial", 14), command=submit_guess)
         submit_button.pack(pady=10)
+        
+        #hsitorique fenetre
+        historique_label = tk.Label(window, text="Historique des essais:", font=("Arial", 12))
+        historique_label.pack(pady=5)
+        historique_text = tk.Text(window, height=10, width=50, state='disabled')
+        historique_text.pack(pady=5)
 
         window.mainloop()
 
@@ -225,7 +231,7 @@ def mode_2_joueurs():
         return black_pegs, white_pegs
 
     def submit_guess():
-        global attempts_left, current_guess
+        global attempts_left, current_guess, secret_code
 
         if len(current_guess) < CODE_LENGTH:
             messagebox.showwarning("information",f"choisissez {CODE_LENGTH} coleur!")
@@ -296,12 +302,6 @@ def mode_2_joueurs():
     back_button_secret_color.pack(pady=10)
     confirm_button = tk.Button(secret_window, text="confirmer", font=("Arial", 14), command=start_game)
     confirm_button.pack(pady=10)
-
-    #hsitorique fenetre
-    historique_label = tk.Label(window, text="Historique des essais:", font=("Arial", 12))
-    historique_label.pack(pady=5)
-    historique_text = tk.Text(window, height=10, width=50, state='disabled')
-    historique_text.pack(pady=5)
     
     secret_window.mainloop()
 
