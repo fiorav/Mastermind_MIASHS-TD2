@@ -6,8 +6,10 @@ COLORS = ['red', 'blue', 'green', 'yellow']
 CODE_LENGTH = 4
 MAX_ATTEMPTS = 10
 secret_code = []
+historique=[]
 def mode_1_joueur():
     global current_guess,attempts_left
+    global historique_text, secret_code
     window_mode_jeu.destroy()
     def generate_secret_code():
         return [random.choice(COLORS) for _ in range(CODE_LENGTH)]
@@ -42,6 +44,12 @@ def mode_1_joueur():
             return
 
         black_pegs, white_pegs = get_feedback(secret_code, current_guess)
+
+        historique.append((current_guess.copy(), black_pegs, white_pegs))
+        historique_text.config(state= 'normal')
+        historique_text.insert(tk.END, f"{current_guess}, avec {black_pegs} noir et {white_pegs} blanc\n")
+        historique_text.config(state='disabled')
+        
         if black_pegs == CODE_LENGTH:
             messagebox.showinfo("information", f"bravo! le code est bien: {secret_code}")
             window.destroy()
@@ -110,6 +118,12 @@ def mode_1_joueur():
     submit_button = tk.Button(window, text="confirmer", font=("Arial", 14), command=submit_guess)
     submit_button.pack(pady=10)
 
+    #historique fenetre
+    historique_label = tk.Label(window, text="Historique des essais:", font=("Arial", 12))
+    historique_label.pack(pady=5)
+    historique_text = tk.Text(window, height=10, width=50, state='disabled')
+    historique_text.pack(pady=5)
+    
     window.mainloop()
 
 def mode_2_joueurs():
@@ -143,6 +157,7 @@ def mode_2_joueurs():
         secret_code.pop()
         update_secret_display()
         
+    global historique_text
     # fonction pour que le joueur 1 choisie les couleurs
     def setup_main_game():
         global attempts_left, current_guess, attempts_label, guess_labels, secret_window
@@ -217,6 +232,12 @@ def mode_2_joueurs():
             return
 
         black_pegs, white_pegs = get_feedback(secret_code, current_guess)
+        
+        historique.append((current_guess.copy(), black_pegs, white_pegs))
+        historique_text.config(state= 'normal')
+        historique_text.insert(tk.END, f"{current_guess}, avec {black_pegs} noir et {white_pegs} blanc\n")
+        historique_text.config(state='disabled')
+        
         if black_pegs == CODE_LENGTH:
             messagebox.showinfo("information",f"bravo le code est bien: {secret_code}")
             window.destroy()
@@ -276,6 +297,12 @@ def mode_2_joueurs():
     confirm_button = tk.Button(secret_window, text="confirmer", font=("Arial", 14), command=start_game)
     confirm_button.pack(pady=10)
 
+    #hsitorique fenetre
+    historique_label = tk.Label(window, text="Historique des essais:", font=("Arial", 12))
+    historique_label.pack(pady=5)
+    historique_text = tk.Text(window, height=10, width=50, state='disabled')
+    historique_text.pack(pady=5)
+    
     secret_window.mainloop()
 
 #poupées russes :(
