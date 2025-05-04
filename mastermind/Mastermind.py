@@ -3,8 +3,7 @@ from tkinter import messagebox, filedialog
 import random
 import json
 
-ALL_COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'brown']
-COLORS = ALL_COLORS[:4]
+COLORS = ['red', 'blue', 'green', 'yellow']
 CODE_LENGTH = 4
 MAX_ATTEMPTS = 10
 SAVE_DIR = 'C:/Users/pc/Desktop/mastermind/Mastermind_saves'
