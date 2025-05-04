@@ -68,7 +68,7 @@ def show_main_menu():
     global window_mode_jeu
     window_mode_jeu = tk.Tk()
     window_mode_jeu.title("Mastermind")
-    window_mode_jeu.geometry("640x320")
+    window_mode_jeu.geometry("900x500")
     menu = tk.Menu(window_mode_jeu)
     file_menu = tk.Menu(menu, tearoff=0)
     file_menu.add_command(label="Regle du jeu", command=regle_du_jeu)
@@ -86,6 +86,10 @@ def show_main_menu():
     btn_Mode_multi.pack(pady=10)
     btn_continuer = tk.Button(frame, text="Continuer", font=("Arial", 20), command=load_game)
     btn_continuer.pack(pady=10)
+    button_difficulty = tk.Button(frame, text="choisir difficulté", font=("Arial", 20), command=show_difficulty_menu)
+    button_difficulty.pack(pady=10)
+    btn_quit = tk.Button(frame, text="Quitter", font=("Arial", 20), command=quit)
+    btn_quit.pack(pady=10)
 
     window_mode_jeu.mainloop()
 
@@ -106,22 +110,15 @@ def create_game_ui(load=False):
     Historique = tk.Label(history_frame, text="Historique des essais", font=("Arial", 12))
     Historique.pack()
     history_canvas = tk.Canvas(history_frame, width=180, height=400)
-    scrollbar = tk.Scrollbar(history_frame, orient="vertical", command=history_canvas.yview)
+    history_canvas.pack()
+
     scrollable_frame = tk.Frame(history_canvas)
-
-    #scrollable_frame.bind(
-    #    "<Configure>",
-    #    lambda e: history_canvas.configure(
-    #        scrollregion=history_canvas.bbox("all")
-    #    )
-    #)
-
     history_canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    history_canvas.configure(yscrollcommand=scrollbar.set)
 
-    history_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    def resize_scrollregion(event):
+        history_canvas.configure(scrollregion=history_canvas.bbox("all"))
 
+    scrollable_frame.bind("<Configure>", resize_scrollregion)
     history_container = scrollable_frame
     update_history_display()
 
@@ -198,9 +195,8 @@ def setup_secret_code_selection():
             labels[i].config(bg=secret_code[i] if i < len(secret_code) else "gray")
 
     def undo():
-        if secret_code:
-            secret_code.pop()
-            update_labels()
+        secret_code.pop()
+        update_labels()
 
     global secret_window
     secret_window = tk.Tk()
@@ -219,7 +215,7 @@ def setup_secret_code_selection():
     labels = [tk.Label(label_frame, bg="gray", width=5, height=2) for _ in range(CODE_LENGTH)]
     for l in labels:
         l.pack(side=tk.LEFT, padx=5)
-
+    
     btn_Retour = tk.Button(secret_window, text="Retour", command=undo)
     btn_Retour.pack(pady=5)
     btn_Confirmer = tk.Button(secret_window, text="Confirmer", command=confirm)
@@ -250,7 +246,7 @@ def submit_guess():#confimer
     else:
         attempts_left -= 1
         attempts_label.config(text=f"Tentatives restante: {attempts_left}")
-        messagebox.showinfo("information",f"{black_pegs} pions noir (position est couleur sont correcte)\n{white_pegs} pions blanc (mauvaise position mais les couleur sont les bonne)")
+        #messagebox.showinfo("information",f"{black_pegs} pions noir (position est couleur sont correcte)\n{white_pegs} pions blanc (mauvaise position mais les couleur sont les bonne)")
         if attempts_left == 0:
             messagebox.showinfo("fin du jeu", f"domage le code est : {secret_code}")
             window.destroy()
@@ -283,9 +279,8 @@ def update_guess_display():
         guess_labels[i].config(bg=current_guess[i] if i < len(current_guess) else "gray")
 
 def Undo():
-    if current_guess:
-        current_guess.pop()
-        update_guess_display()
+    current_guess.pop()
+    update_guess_display()
 
 def regle_du_jeu():
     rules_window = tk.Toplevel()
@@ -335,6 +330,44 @@ def regle_du_jeu():
 def back_menu():
     window.destroy()
     show_main_menu() 
+
+def quit():
+    window_mode_jeu.destroy()
+
+def set_difficulty(level):
+    global CODE_LENGTH, MAX_ATTEMPTS, COLORS
+    if level == 'facile':
+        CODE_LENGTH = 4
+        MAX_ATTEMPTS = 10
+        COLORS = ['red', 'blue', 'green', 'yellow']
+    elif level == 'moyen':
+        CODE_LENGTH = 5
+        MAX_ATTEMPTS = 8
+        COLORS = ['red', 'blue', 'green', 'yellow', 'orange']
+    elif level == 'difficile':
+        CODE_LENGTH = 6
+        MAX_ATTEMPTS = 8
+        COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple']
+    elif level == "test":
+        CODE_LENGTH = 4
+        MAX_ATTEMPTS = 999
+        COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'brown']
+
+def show_difficulty_menu():
+    difficulty_window = tk.Toplevel()
+    difficulty_window.title("Choisir la difficulté")
+
+    label=tk.Label(difficulty_window, text="Sélectionnez une difficulté", font=("Arial", 18))
+    label.pack(pady=10)
+
+    btn_facile = tk.Button(difficulty_window, text="Facile", font=("Arial", 14), command=lambda: [set_difficulty('facile'), difficulty_window.destroy()])
+    btn_facile.pack(pady=5)
+    btn_moyen = tk.Button(difficulty_window, text="Moyen", font=("Arial", 14), command=lambda: [set_difficulty('moyen'), difficulty_window.destroy()])
+    btn_moyen.pack(pady=5)
+    btn_difficile = tk.Button(difficulty_window, text="Difficile", font=("Arial", 14), command=lambda: [set_difficulty('difficile'), difficulty_window.destroy()])
+    btn_difficile.pack(pady=5)
+    btn_test = tk.Button(difficulty_window, text="Test", font=("Arial", 14), command=lambda: [set_difficulty('test'), difficulty_window.destroy()])
+    btn_test.pack(pady=5)
 
 # ------------------- Menu -------------------
 def create_menu(win):
