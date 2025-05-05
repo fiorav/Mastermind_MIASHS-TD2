@@ -31,9 +31,21 @@ guess_history = []
             historique_text.insert(tk.END, f"{guess}, avec {black} noir et {white} blanc\n")
         historique_text.config(state='disabled')
 
-
-
-
+#Jeu solo 
+def mode_1_joueur(load=False):
+    global game_mode, secret_code, attempts_left, current_guess, guess_history
+    game_mode= 'single'
+    window_mode_jeu.destroy()
+    if not load:
+        secret_code = []
+        for _ in range (CODE_LENGTH):
+            secret_code.append(random.choice(COLORS))
+        attempts_left = MAX_ATTEMPTS
+        current_guess = []
+        guess_history = []
+    create_game_ui(load)
+    
+        
 #Jeu multi
 def mode_2_joueurs(load=False):
     global game_mode, secret_code, attempts_left, current_guess, guess_history
@@ -94,7 +106,15 @@ def setup_secret_code_selection():
             current_guess = []
             update_guess_display()
 
+def select_color(color):
+    global current_guess
+    if len(current_guess)< CODE_LENGTH:
+        current_guess.append(color)
+        update_guess_display()
 
+def update_guess_display():
+    for i in range (CODE_LENGTH):
+        guess_labels[i].config(bg=current_guess[i] if i < len(current_guess) else "gray")
 
 
 def set_difficulty(level):
@@ -131,3 +151,21 @@ def show_difficulty_menu():
     btn_difficile.pack(pady=5)
     btn_test = tk.Button(difficulty_window, text="Test", font=("Arial", 14), command=lambda: [set_difficulty('test'), difficulty_window.destroy()])
     btn_test.pack(pady=5)
+
+#bar de menu 
+def create_menu(win):
+    menu=tk.Menu(win)
+    file_menu=tk.Menu(menu, tearoff=0)
+    file_menu.add_command(label="Retour au menu principal", command=back_menu)
+    file_menu.add_command(label="Sauvegarder", command=save_game)
+    file_menu.add_command(label="Regle du jeu", command=regle_du_jeu)
+    file_menu.add separator()
+    file_menu.add_command(label="Quitter", command=quit)
+    menu.add_cascade(label="Fichier", menu=file_menu)
+    win.config(menu=menu)
+#                ↑     ↑
+#                |     L'objet de menu que vous avez créé
+#           Nom du paramètre requis par Tkinter
+
+#Lancer le jeu
+show_main_menu()
