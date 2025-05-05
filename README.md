@@ -1,7 +1,7 @@
 # Mastermind_MIASHS-TD2
-ANJAHARIVELO Harena 
-BAOUCHI Noe
-RAVOAJA Fiona
+ANJAHARIVELO Harena, 
+BAOUCHI Noe, 
+RAVOAJA Fiona, 
 WANG Maskil
 
 https://github.com/fiorav/Mastermind_MIASHS-TD2
