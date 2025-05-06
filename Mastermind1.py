@@ -62,6 +62,48 @@ def load_game():
     except Exception as e:
         messagebox.showerror("Erreur", f"Erreur de chargement: {e}")
 
+#Interface menu principal
+def show_main_menu():
+    global window_mode_jeu
+    window_mode_jeu = tk.Tk()
+    window_mode_jeu.title("Mastermind")
+    window_mode_jeu.geometry("900x500")
+    menu = tk.Menu(window_mode_jeu)
+    file_menu = tk.Menu(menu, tearoff=0)
+    file_menu.add_command(label="Regle du jeu", command=regle_du_jeu)
+    file_menu.add_separator()
+    file_menu.add_command(label="Quitter", command=window_mode_jeu.quit)
+    menu.add_cascade(label="Fichier", menu=file_menu)
+    window_mode_jeu.config(menu=menu)
+
+    frame = tk.Frame(window_mode_jeu)
+    frame.pack(pady=50)
+
+    btn_Mode_solo = tk.Button(frame, text="Mode 1 joueur", font=("Arial", 20), command=mode_1_joueur)
+    btn_Mode_solo.pack(pady=10)
+    btn_Mode_multi = tk.Button(frame, text="Mode 2 joueurs", font=("Arial", 20), command=mode_2_joueurs)
+    btn_Mode_multi.pack(pady=10)
+    btn_continuer = tk.Button(frame, text="Continuer", font=("Arial", 20), command=load_game)
+    btn_continuer.pack(pady=10)
+    button_difficulty = tk.Button(frame, text="choisir difficulté", font=("Arial", 20), command=show_difficulty_menu)
+    button_difficulty.pack(pady=10)
+    btn_quit = tk.Button(frame, text="Quitter", font=("Arial", 20), command=quit)
+    btn_quit.pack(pady=10)
+
+    window_mode_jeu.mainloop()
+
+#Interface de jeu
+def create_game_ui(load=False):
+    global window, attempts_label, guess_labels ,historique_label ,historique_text,guess_history
+
+    window = tk.Tk()
+    window.title("Mastermind")
+    window.geometry("1280x720")
+    create_menu(window)
+
+    main_frame = tk.Frame(window)
+    main_frame.pack(fill=tk.BOTH, expand=True)
+
 
 
     historique_label = tk.Label(window, text="Historique des essais:", font=("Arial", 12))
@@ -69,6 +111,31 @@ def load_game():
     historique_text = tk.Text(window, height=10, width=60, state='disabled')
     historique_text.pack(pady=5,expand=True)
 
+
+    game_frame = tk.Frame(main_frame)
+    game_frame.pack(side=tk.RIGHT, expand=True)
+
+    attempts_label = tk.Label(game_frame, text=f"Tentatives restantes: {attempts_left}", font=("Arial", 14))
+    attempts_label.pack(pady=10)
+
+    color_frame = tk.Frame(game_frame)
+    color_frame.pack()
+    for color in COLORS:
+        btn = tk.Button(color_frame, bg=color, width=5, height=2, command=lambda c=color: select_color(c))
+        btn.pack(side=tk.LEFT, padx=5)
+
+    guess_frame = tk.Frame(game_frame)
+    guess_frame.pack(pady=10)
+    guess_labels = []
+    for _ in range(CODE_LENGTH):
+        label = tk.Label(guess_frame, bg="gray", width=5, height=2)
+        label.pack(side=tk.LEFT, padx=5)
+        guess_labels.append(label)
+
+    btn_Retour = tk.Button(game_frame, text="Retour", command=Undo)
+    btn_Retour.pack(pady=5)
+    btn_Confirmer = tk.Button(game_frame, text="Confirmer", command=submit_guess)
+    btn_Confirmer.pack(pady=5)
 
 
 
@@ -78,6 +145,8 @@ def load_game():
         for guess, black, white in guess_history:
             historique_text.insert(tk.END, f"{guess}, avec {black} noir et {white} blanc\n")
         historique_text.config(state='disabled')
+   window.mainloop()
+
 
 #Jeu solo 
 def mode_1_joueur(load=False):
