@@ -199,6 +199,61 @@ def setup_secret_code_selection():
         secret_code.pop()
         update_labels()
 
+    global secret_window
+        secret_window = tk.Tk()
+        secret_window.title("Choix du code secret")
+
+        txt = tk.Label(secret_window, text="Choisissez 4 couleurs :", font=("Arial", 14))
+        txt.pack(pady=10)
+
+        btn_frame = tk.Frame(secret_window)
+        btn_frame.pack()
+        for color in COLORS:
+            btn = tk.Button(btn_frame, bg=color, width=5, height=2, command=lambda c=color: add_color(c))
+            btn.pack(side=tk.LEFT, padx=5)
+
+        label_frame = tk.Frame(secret_window)
+        label_frame.pack(pady=10)
+        labels = [tk.Label(label_frame, bg="gray", width=5, height=2) for _ in range(CODE_LENGTH)]
+        for l in labels:
+            l.pack(side=tk.LEFT, padx=5)
+    
+        btn_Retour = tk.Button(secret_window, text="Retour", command=undo)
+        btn_Retour.pack(pady=5)
+        btn_Confirmer = tk.Button(secret_window, text="Confirmer", command=confirm)
+        btn_Confirmer.pack(pady=5)
+        secret_window.mainloop()
+
+#Logique de jeu
+def get_feedback(secret, guess): #detecter si les couleurs sont a la bonne place ou bonne couleur ou les deux
+        black = 0
+        for i in range(len(secret)):
+            if secret[i] == guess[i]:
+                black += 1
+    
+        white = 0
+        for color in set(guess): #set permet d'enlever les couleurs qui repete
+            secret_count = 0
+            guess_count = 0
+            for c in secret:
+                if c == color:
+                    secret_count += 1
+            for c in guess:
+                if c == color:
+                    guess_count += 1
+            white += min(secret_count, guess_count)
+
+        white -= black
+        return black, white
+
+def submit_guess():#confimer
+    global attempts_left, current_guess, guess_history
+
+    if len(current_guess) < CODE_LENGTH:
+        messagebox.showwarning("information", f"choisissez {CODE_LENGTH} couleurs!")
+        return
+
+    black_pegs, white_pegs = get_feedback(secret_code, current_guess)
 
 
 
