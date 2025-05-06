@@ -145,7 +145,7 @@ def create_game_ui(load=False):
         for guess, black, white in guess_history:
             historique_text.insert(tk.END, f"{guess}, avec {black} noir et {white} blanc\n")
         historique_text.config(state='disabled')
-   window.mainloop()
+    window.mainloop()
 
 
 #Jeu solo 
@@ -200,29 +200,29 @@ def setup_secret_code_selection():
         update_labels()
 
     global secret_window
-        secret_window = tk.Tk()
-        secret_window.title("Choix du code secret")
+    secret_window = tk.Tk()
+    secret_window.title("Choix du code secret")
 
-        txt = tk.Label(secret_window, text="Choisissez 4 couleurs :", font=("Arial", 14))
-        txt.pack(pady=10)
+    txt = tk.Label(secret_window, text="Choisissez 4 couleurs :", font=("Arial", 14))
+    txt.pack(pady=10)
 
-        btn_frame = tk.Frame(secret_window)
-        btn_frame.pack()
-        for color in COLORS:
-            btn = tk.Button(btn_frame, bg=color, width=5, height=2, command=lambda c=color: add_color(c))
-            btn.pack(side=tk.LEFT, padx=5)
+    btn_frame = tk.Frame(secret_window)
+    btn_frame.pack()
+    for color in COLORS:
+        btn = tk.Button(btn_frame, bg=color, width=5, height=2, command=lambda c=color: add_color(c))
+        btn.pack(side=tk.LEFT, padx=5)
 
-        label_frame = tk.Frame(secret_window)
-        label_frame.pack(pady=10)
-        labels = [tk.Label(label_frame, bg="gray", width=5, height=2) for _ in range(CODE_LENGTH)]
-        for l in labels:
-            l.pack(side=tk.LEFT, padx=5)
+    label_frame = tk.Frame(secret_window)
+    label_frame.pack(pady=10)
+    labels = [tk.Label(label_frame, bg="gray", width=5, height=2) for _ in range(CODE_LENGTH)]
+    for l in labels:
+        l.pack(side=tk.LEFT, padx=5)
     
-        btn_Retour = tk.Button(secret_window, text="Retour", command=undo)
-        btn_Retour.pack(pady=5)
-        btn_Confirmer = tk.Button(secret_window, text="Confirmer", command=confirm)
-        btn_Confirmer.pack(pady=5)
-        secret_window.mainloop()
+    btn_Retour = tk.Button(secret_window, text="Retour", command=undo)
+    btn_Retour.pack(pady=5)
+    btn_Confirmer = tk.Button(secret_window, text="Confirmer", command=confirm)
+    btn_Confirmer.pack(pady=5)
+    secret_window.mainloop()
 
 #Logique de jeu
 def get_feedback(secret, guess): #detecter si les couleurs sont a la bonne place ou bonne couleur ou les deux
@@ -254,10 +254,7 @@ def submit_guess():#confimer
         return
 
     black_pegs, white_pegs = get_feedback(secret_code, current_guess)
-
-
-
-
+    
     guess_history.append((current_guess.copy(), black_pegs, white_pegs))
     historique_text.config(state= 'normal')
     historique_text.insert(tk.END, f"{current_guess}, avec {black_pegs} noir et {white_pegs} blanc\n")
@@ -288,6 +285,55 @@ def update_guess_display():
     for i in range (CODE_LENGTH):
         guess_labels[i].config(bg=current_guess[i] if i < len(current_guess) else "gray")
 
+def Undo():
+    current_guess.pop()
+    update_guess_display()
+
+def regle_du_jeu():
+    rules_window = tk.Toplevel()
+    rules_window.title("Règles du Jeu Mastermind")
+    rules_window.geometry("800x400")
+    
+    frame = tk.Frame(rules_window)
+    frame.pack(fill=tk.BOTH, expand=True)
+    
+    text = tk.Text(frame, wrap=tk.WORD)
+    text.pack(fill=tk.BOTH, expand=True)
+    
+    rules_text = """
+    Règles du Jeu Mastermind:
+
+    1. Objectif du Jeu:
+    - En mode 1 joueur: Deviner le code secret généré par l'ordinateur.
+    - En mode 2 joueurs: Le Joueur 1 crée un code secret que le Joueur 2 doit deviner.
+
+    2. Mécanique de Jeu:
+    - Le code secret est composé de 4 couleurs ou plus selon le difficulté du jeu.
+    - Les couleurs possibles sont: rouge, bleu, vert et jaune.
+    - Les couleurs peuvent être répétées dans le code.
+
+    3. Feedback:
+    - Pions noirs: Nombre de couleurs correctement placées.
+    - Pions blancs: Nombre de couleurs correctes mais mal placées.
+    
+    4. Nombre d'Essais:
+    - Vous avez 10 tentatives ou moins selon le difficulté du jeu pour deviner le code secret.
+    
+    5. Commandes:
+    - Cliquez sur les boutons de couleur pour faire une proposition.
+    - Utilisez le bouton "Retour" pour corriger votre sélection.
+    - Cliquez sur "Confirmer" pour valider votre proposition.
+    """
+    
+    text.insert(tk.END, rules_text)
+    text.config(state=tk.DISABLED) #pour que le text devien non modifiable
+
+def back_menu():
+    window.destroy()
+    show_main_menu() 
+
+def quit():
+    window.destroy()
 
 def set_difficulty(level):
     global CODE_LENGTH, MAX_ATTEMPTS, COLORS
@@ -302,7 +348,7 @@ def set_difficulty(level):
     elif level == 'difficile':
         CODE_LENGTH = 6
         MAX_ATTEMPTS = 8
-        COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple'
+        COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple']
     elif level == "test":
         CODE_LENGTH = 8
         MAX_ATTEMPTS = 999
@@ -331,7 +377,7 @@ def create_menu(win):
     file_menu.add_command(label="Retour au menu principal", command=back_menu)
     file_menu.add_command(label="Sauvegarder", command=save_game)
     file_menu.add_command(label="Regle du jeu", command=regle_du_jeu)
-    file_menu.add separator()
+    file_menu.add_separator()
     file_menu.add_command(label="Quitter", command=quit)
     menu.add_cascade(label="Fichier", menu=file_menu)
     win.config(menu=menu)
