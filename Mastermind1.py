@@ -14,6 +14,54 @@ current_guess = []
 attempts_left = MAX_ATTEMPTS
 guess_history = []
 
+#Sauvegarde et chargement
+def save_game():
+    filename = filedialog.asksaveasfilename(defaultextension=".json", initialdir=SAVE_DIR,
+                                            filetypes=[("JSON Files", "*.json")],
+                                            title="Sauvegarder la partie")
+    if not filename:
+        return
+    game_data = {
+        'game_mode': game_mode,
+        'secret_code': secret_code,
+        'attempts_left': attempts_left,
+        'current_guess': current_guess,
+        'guess_history': guess_history,
+        'max_attempts': MAX_ATTEMPTS,
+        'code_length': CODE_LENGTH,
+        'colors': COLORS
+    }
+    try:
+        with open(filename, 'w') as f:
+            json.dump(game_data, f)
+        messagebox.showinfo("Sauvegarde", "Le jeu a été sauvegardé !")
+    except Exception as e:
+        messagebox.showerror("Erreur", f"Erreur de sauvegarde: {e}")
+
+def load_game():
+    global game_mode, secret_code, attempts_left, current_guess, guess_history
+    filename = filedialog.askopenfilename(initialdir=SAVE_DIR, title="Charger la partie",
+                                          filetypes=[("JSON Files", "*.json")])
+    if not filename:
+        return
+    try:
+        with open(filename, 'r') as f:
+            data = json.load(f)
+        game_mode = data['game_mode']
+        secret_code = data['secret_code']
+        attempts_left = data['attempts_left']
+        current_guess = data['current_guess']
+        guess_history = data.get('guess_history',[])
+
+        if game_mode == 'single':
+            mode_1_joueur(load=True)
+        elif game_mode == 'multi':
+            mode_2_joueurs(load=True)
+        else:
+            raise ValueError("Mode de jeu invalide")
+    except Exception as e:
+        messagebox.showerror("Erreur", f"Erreur de chargement: {e}")
+
 
 
     historique_label = tk.Label(window, text="Historique des essais:", font=("Arial", 12))
